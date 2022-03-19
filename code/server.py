@@ -21,7 +21,8 @@ print(type(clientlist))
 def sende_to_all():
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 5)
-    sock.sendto(b"haha test.", (broadcast_ip,5000))
+    my_str = "\nthere have 3 clients connected to this server".encode('utf-8')
+    sock.sendto(my_str, (broadcast_ip,5000))
     print('xxxxxxxxxxxxx sending. xxxxxxxxxxxxx')
     
 def client_handler(client,addr):
@@ -54,6 +55,8 @@ while True:
     client, addr = server.accept()
     clientlist.append(client)
     print('All CLIENTS : ',clientlist)
+    task = td.Thread(target=client_handler,args=(client,addr))
+    task.start()
     ####################################
     # เมื่อมีผู้ใช้เชื่อมต่อเข้ามาครบ 3 เครื่องจะส่ง message ไปยังทุกเครื่อง
     n = 0
@@ -65,7 +68,3 @@ while True:
             task1.start()
         # print()
     ######################################
-
-    task = td.Thread(target=client_handler,args=(client,addr))
-    task.start()
-
