@@ -3,7 +3,7 @@ from time import sleep
 import socket
 import threading as td
 
-# broadcast_ip = '127.255.255.255' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
+broadcast_ip = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
 # ADMIN_PORT = 9999
 
 my_ip = 'localhost'
@@ -17,9 +17,12 @@ clientlist = [] # เก็บผู้ใช้ที่ connect เข้า�
 
 
 print(type(clientlist))
-def sendmassageall():
-    clientlist[0].send("Halo from admin".encode('utf-8'))
 
+def sende_to_all():
+    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 5)
+    sock.sendto(b"haha test.", (broadcast_ip,5000))
+    print('xxxxxxxxxxxxx sending. xxxxxxxxxxxxx')
     
 def client_handler(client,addr):
     while True:
@@ -35,8 +38,7 @@ def client_handler(client,addr):
             break
         masage = str(addr) + ' >>> ' + data
         print('Masage from User : ',masage)
-        if data == 'admin':
-            client.send("hello admin".encode('utf-8'))
+
 
     # user exit
     client.close()
@@ -52,7 +54,18 @@ while True:
     client, addr = server.accept()
     clientlist.append(client)
     print('All CLIENTS : ',clientlist)
+    ####################################
+    # เมื่อมีผู้ใช้เชื่อมต่อเข้ามาครบ 3 เครื่องจะส่ง message ไปยังทุกเครื่อง
+    n = 0
+    # สร้างเงื่อนไขในการ run thread
+    for i in clientlist:
+        n = n+1
+        if n==3:
+            task1 = td.Thread(target=sende_to_all)
+            task1.start()
+        # print()
+    ######################################
 
     task = td.Thread(target=client_handler,args=(client,addr))
     task.start()
-    
+
