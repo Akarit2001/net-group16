@@ -3,7 +3,7 @@ from time import sleep
 import socket
 import threading as td
 
-broadcast_ip = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
+multicast_Address = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน server
 # ADMIN_PORT = 9999
 
 my_ip = 'localhost'
@@ -22,7 +22,7 @@ def sende_to_all():
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 5)
     my_str = "\nthere have 3 clients connected to this server".encode('utf-8')
-    sock.sendto(my_str, (broadcast_ip,5000))
+    sock.sendto(my_str, (multicast_Address,5000))
     print('xxxxxxxxxxxxx sending. xxxxxxxxxxxxx')
     
 def client_handler(client,addr):

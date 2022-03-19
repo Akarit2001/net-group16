@@ -4,7 +4,7 @@ import sys
 import struct
 # from pysql import mysqls as ms
 
-broadcast_ip = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
+multicast_Address = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
 
 server_ip = 'localhost'
 port = 5050
@@ -16,7 +16,7 @@ def listenmsg():
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     sock.bind(('',port2))
-    mreq = struct.pack("4sl",socket.inet_aton(broadcast_ip),socket.INADDR_ANY)
+    mreq = struct.pack("4sl",socket.inet_aton(multicast_Address),socket.INADDR_ANY)
 
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
     
