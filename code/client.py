@@ -1,24 +1,43 @@
 import socket
 import threading as td
-from pysql import mysqls as ms
-# server_ip = '193.168.88.129'
-# server_ip = '192.168.88.130'
-# server_ip = '10.224.109.10'
-ms.test()
-pp = ms.Person('AAA',50)
-pp.myfunc()
+import sys
+# from pysql import mysqls as ms
+
 server_ip = 'localhost'
 port = 5050
+BUFFSIZE = 4096
+
+def server_handler(client):
+    while True:
+        try:
+            data = client.recv(BUFFSIZE)
+        except:
+            print('ERROR')
+            break
+        #exit funtion
+        if(not data) or (data.decode('utf-8') == 'q'):
+            print('OUT : ',client)
+            break
+
+        print('Masage from User : ',data.decode('utf-8'))
+    # user exit
+    client.close()
+
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+try:
+    client.connect((server_ip,port))
+except:
+    print('ERROR!')
+    sys.exit()
+
+task = td.Thread(target=server_handler,args=(client,))
+task.start()
 
 while True:
-    data = input('Sen Message : ')
-    # server = socket.socket()
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-    server.connect((server_ip, port))
-    server.send(data.encode('utf-8'))
-
-    data_server = server.recv(1024).decode('utf-8')
-    print('Data from Server: ',data_server)
-    server.close()
+    msg = input('Message: ')
+    client.sendall(msg.encode('utf-8'))
+    if msg == 'q' or msg == '':
+        break
+cilent.close()

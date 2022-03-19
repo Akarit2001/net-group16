@@ -1,4 +1,3 @@
-# import pymysql
 import mysql.connector
 import random
 import datetime
@@ -11,7 +10,7 @@ class MySql:
             host="localhost",
             user="root",
             password="",
-            database="foodservice"
+            database="foodservice" ############ ชื่อ database ที่ต้องการ connect ##############
         )
         self.uid = str({0: 11}).format(
             random.randint(1, 9999999999)).replace(" ", "0")

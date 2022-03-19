@@ -1,13 +1,24 @@
 import  time
 import socket
 import threading as td
-# my_ip = '192.168.88.1'
-# my_ip = '192.168.88.130'
+
+broadcast_ip = '127.255.255.255' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
+ADMIN_PORT = 9999
+
 my_ip = 'localhost'
 PORT = 5050
 BUFFSIZE = 4096
+
+
+
+
 clientlist = [] # เก็บผู้ใช้ที่ connect เข้ามา
+
 print(type(clientlist))
+def sendmassageall():
+    clientlist[0].send("Halo from admin".encode('utf-8'))
+
+    
 def client_handler(client,addr):
     while True:
         try:
@@ -16,14 +27,14 @@ def client_handler(client,addr):
             clientlist.remove(client)
             break
         #exit funtion
-        if(not data) or (data.decode('utf-8') == 'q'):
+        if(not data) or (data == 'q'):
             clientlist.remove(client)
             print('OUT : ',client)
             break
         masage = str(addr) + ' >>> ' + data
-        prit('Masage from User : ',masage)
-
-        sendmassageall()
+        print('Masage from User : ',masage)
+        if data == 'admin':
+            client.send("hello admin".encode('utf-8'))
 
     # user exit
     client.close()
@@ -43,7 +54,3 @@ while True:
     task = td.Thread(target=client_handler,args=(client,addr))
     task.start()
     
-def sendmassageall():
-    msg = "สวัสดีจาก Admin".encode('utf-8')
-    for i in clientlist:
-        i.sendall(msg)
