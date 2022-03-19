@@ -7,6 +7,8 @@ server_ip = 'localhost'
 port = 5050
 BUFFSIZE = 4096
 
+
+
 def server_handler(client):
     while True:
         try:
@@ -34,7 +36,6 @@ except:
 
 task = td.Thread(target=server_handler,args=(client,))
 task.start()
-
 while True:
     msg = input('Message: ')
     client.sendall(msg.encode('utf-8'))

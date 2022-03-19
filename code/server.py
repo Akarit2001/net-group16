@@ -1,9 +1,10 @@
 import  time
+from time import sleep
 import socket
 import threading as td
 
-broadcast_ip = '127.255.255.255' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
-ADMIN_PORT = 9999
+# broadcast_ip = '127.255.255.255' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
+# ADMIN_PORT = 9999
 
 my_ip = 'localhost'
 PORT = 5050
@@ -13,6 +14,7 @@ BUFFSIZE = 4096
 
 
 clientlist = [] # เก็บผู้ใช้ที่ connect เข้ามา
+
 
 print(type(clientlist))
 def sendmassageall():
