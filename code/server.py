@@ -39,6 +39,9 @@ def client_handler(client,addr):
             break
         masage = str(addr) + ' >>> ' + data
         print('Masage from User : ',masage)
+        for i in range(5):
+            print(i)
+            client.send("Masage from server: testing{}".format(i).encode('utf-8'))
 
 
     # user exit

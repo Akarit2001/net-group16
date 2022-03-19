@@ -137,10 +137,45 @@ class MySql:
         my_str = "INSERT INTO Bill VALUES('{}','{}','{}',{},'{}');".format(bid,uid,fid,total,date)
         mycursor.execute(my_str)
         self.__mydb.commit()
-    def oder(self,fid,uid,total):
-        for i in a:
-          print()
-        print()
+    # def order(self,fid,uid,total):
+    #     for i in a:
+    #       print()
+    #     print()
+    def showAllBill(self):
+        mycursor = self.__mydb.cursor()
+        my_str = "select * from Bill"
+        mycursor.execute(my_str)
+        myresult = mycursor.fetchall()
+        stemp = ""
+        for e in myresult:
+            stemp = e[0]
+            print(e)
+    def getbillUserDetail(self,username="",userId=""):
+        mycursor = self.__mydb.cursor()
+        get = ""
+        result = ""
+        if username == "":
+            get = 'Bill.uid'
+            result = userId
+        elif userId== "":
+            get = 'User.uname'
+            result = username
+        elif not(username=="") and not(userId==""):
+            get = 'User.uname'
+            result = username
+        else:
+            get = 'User.uname'
+            result = "---"
+        my_str = """
+        select Bill.bid,User.uname,Food.fname,Bill.Total,Bill.time
+        from Bill,User,Food
+        where Bill.uid = User.uid AND Bill.fid = Food.fid AND {} = '{}'
+        """.format(get,result)
+
+        mycursor.execute(my_str)
+        myresult = mycursor.fetchall()
+        for e in myresult:
+            print(e)
 
 # if __name__ == '__main__':
 #     MySql().createUser('user1', 'user1', 'kku')

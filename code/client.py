@@ -2,6 +2,7 @@ import socket
 import threading as td
 import sys
 import struct
+import time
 # from pysql import mysqls as ms
 
 multicast_Address = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
@@ -28,14 +29,14 @@ def server_handler(client):
         try:
             data = client.recv(BUFFSIZE)
         except:
-            print('ERROR!')
+            print('ERROR! cannot connect to server.')
             break
         #exit funtion
         if(not data) or (data.decode('utf-8') == 'q'):
             print('OUT : ',client)
             break
 
-        print('Masage from User : ',data.decode('utf-8'))
+        print(data.decode('utf-8'))
     # user exit
     client.close()
 
@@ -58,7 +59,8 @@ task2.start()
 
 while True:
     msg = input('Message: ')
-    client.sendall(msg.encode('utf-8'))
+    client.send(msg.encode('utf-8'))
+    time.sleep(0.5)
     if msg == 'q' or msg == '':
         break
 client.close()

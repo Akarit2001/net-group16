@@ -32,9 +32,13 @@ print(type(sql.getFoods('somtum')[0]))
 date = datetime.datetime.now()
 print(date.strftime("%Y-%m-%d"))
 
-user1 = ms.MySql()
-for i in range(3):
-    fids = str(input())
-    totals = int(input())
-    user1.genBill(fids, '07055401949', totals)
+# user1 = ms.MySql()
+# for i in range(3):
+#     fids = str(input())
+#     totals = int(input())
+#     user1.genBill(fids, '07055401949', totals)
+
+ms.MySql().getbillUserDetail(userId="07055401949")
+print("-------------------------------------------")
+ms.MySql().showAllBill()
 
