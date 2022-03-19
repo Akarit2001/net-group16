@@ -22,6 +22,7 @@ mycursor = mydb.cursor()
 
 
 #     # str = """ DROP TABLE User  ;"""
+
 #     str = """  CREATE TABLE User(
 #     UID CHAR(11),
 #     UName VARCHAR(40),
