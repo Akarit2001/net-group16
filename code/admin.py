@@ -1,5 +1,9 @@
 from pysql import mysqls as ms
 import datetime
+#####################################################################################################
+## การจะใช้คำสั่งใน mysqls ได้ต้องสร้าง database ให้เหมือนในโปรเจคนี้ก่อน ตั้งชื่อ database ว่า foodservice และมี   ##
+## table เหมือนใน file net-group16\code\pysql\create_table_and_table_struct\createTable.py         ##
+####################################################################################################
 # ms.MySql().createUser(username='user234',password='user23', address='KKU')
 # print('--------------------------------------')
 # ms.MySql().showAllUser()
