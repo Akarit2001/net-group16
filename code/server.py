@@ -39,10 +39,12 @@ def client_handler(client,addr):
             break
         masage = str(addr) + ' >>> ' + data
         print('Masage from User : ',masage)
+        ############################################################################
+        ###         ส่งข้อความหาผู้ใช้หลายครั้งได้โดยไม่ต้องรอผู้ใช้ตอบกลับ                  ###
         for i in range(5):
             print(i)
             client.send("Masage from server: testing{}".format(i).encode('utf-8'))
-
+        ############################################################################
 
     # user exit
     client.close()
