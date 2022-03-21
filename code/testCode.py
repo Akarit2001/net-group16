@@ -45,10 +45,11 @@ ms.MySql().showAllBill()
 
 ###################################################
 def startClient():
-  print('='*15 + '  Welcome to Foodservice  ' + '='*15)
-  print("\t1. Login\n\t2. Register\n\t3. Bill history")
+  print('='*15 + '  Welcome to Foodservice  ' + '='*15+'\n')
   
 def checkChoice(choice):
+  print("\t1. Login\n\t2. Register\n\t3. Bill history")
+  choice = int("Select : ")
   if choice == '1':
         print('Welcome You are going to login')
         login()
@@ -61,7 +62,7 @@ def checkChoice(choice):
         ms.MySql().showAllBill()
         ######
     else:
-        print('\t\t' + '*'*5 + ' Invalid option please try again ' + '*'*5 + '\n')
+        print('\t\t' + '!'*5 + ' Invalid option please try again ' + '!'*5 + '\n')
         
 def login():
     username = input('Username : ')
