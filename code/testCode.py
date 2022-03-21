@@ -41,3 +41,43 @@ print(date.strftime("%Y-%m-%d"))
 ms.MySql().getbillUserDetail(userId="07055401949")
 print("-------------------------------------------")
 ms.MySql().showAllBill()
+
+
+###################################################
+def startClient():
+  print('='*15 + '  Welcome to Foodservice  ' + '='*15)
+  print("\t1. Login\n\t2. Register\n\t3. Bill history")
+  
+def checkChoice(choice):
+  if choice == '1':
+        print('Welcome You are going to login')
+        login()
+#         send(choice)
+    elif choice == '2':
+        print('Welcome You are going to register')
+        register()
+    elif choice == '3':
+        print('This is a Bill history')
+        ms.MySql().showAllBill()
+        ######
+    else:
+        print('\t\t' + '*'*5 + ' Invalid option please try again ' + '*'*5 + '\n')
+        
+def login():
+    username = input('Username : ')
+    password = input('Password : ')
+    ####
+    ####
+    print('You are logged!\n')
+    
+def register():
+    username = input('Username : ')
+    password = input('Password : ')
+    address = input('Address : ')
+    ####
+    if :
+      ms.Mysql.createUser(username,password, address)
+    else:
+       ######
+   
+    print('You are registered!\n')
