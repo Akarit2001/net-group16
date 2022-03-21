@@ -10,7 +10,7 @@ class MySql:
             host="localhost",
             user="root",
             password="",
-            database="foodservice" ############ ชื่อ database ที่ต้องการ connect ##############
+            database="foodservice"  # ชื่อ database ที่ต้องการ connect ##############
         )
         self.uid = str({0: 11}).format(
             random.randint(1, 9999999999)).replace(" ", "0")
@@ -18,7 +18,7 @@ class MySql:
             random.randint(1, 999999)).replace(" ", "0")
         self.bid = str({0: 6}).format(
             random.randint(1, 999999)).replace(" ", "0")
-    # for client and admin
+
     def createUser(self, username, password, address):
         mycursor = self.__mydb.cursor()
         uid = self.uid
@@ -33,15 +33,16 @@ class MySql:
         elif(b):
             print("User name: {} has been used.".format(username))
 
-    # for admin only
-    def showAllUser(self):
+    def getAllUser(self):
         mycursor = self.__mydb.cursor()
         my_str = """select * from user;"""
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
+        stemp = ""
         for x in myresult:
-            print("UID: {} UName: {} Password: {} Address: {}".format(
-                x[0], x[1], x[2], x[3]))
+            stemp = stemp+"UID: {} UName: {} Password: {} Address: {}\n".format(
+                x[0], x[1], x[2], x[3])
+        return stemp
 
     def showUser(self, UIDs="", username=""):
         mycursor = self.__mydb.cursor()
@@ -79,7 +80,7 @@ class MySql:
             my_str = seall
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
-        return myresult #returntype ->> list<tuple>
+        return myresult  # returntype ->> list<tuple>
 
     def dropUser(self, UIDs, username):
         mycursor = self.__mydb.cursor()
@@ -89,94 +90,141 @@ class MySql:
         print('User: {} droped.'.format(username))
         self.__mydb.commit()
 
-
     # Food
-    def addFoods(self,name,price):
+    def addFoods(self, name, price):
         mycursor = self.__mydb.cursor()
         fid = self.fid
-        my_str = "INSERT INTO food VALUES('{}','{}',{});".format(fid,name,price)
+        my_str = "INSERT INTO food VALUES('{}','{}',{});".format(
+            fid, name, price)
         # chek user
         b = bool(self.getFoods(fname=name))
         if(not b):
             # print(my_str)
             mycursor.execute(my_str)
             self.__mydb.commit()
-            print("ID: {} Food: {} Price: {} was added.".format(fid, name,price))
+            print("ID: {} Food: {} Price: {} was added.".format(fid, name, price))
         elif(b):
             print("There is a food with this name '{}'".format(name))
 
-    def deleteFoods(self,fid, fname):
+    def deleteFoods(self, fid, fname):
         mycursor = self.__mydb.cursor()
         my_str = "DELETE FROM food WHERE fid = '{}' and fname = '{}'".format(
             fid, fname)
         mycursor.execute(my_str)
         print('Food: {} droped.'.format(fname))
         self.__mydb.commit()
-    def showAllFood(self):
+
+    def getAllFood(self):
         mycursor = self.__mydb.cursor()
         my_str = """select * from food;"""
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
+        stemp = ""
         for x in myresult:
-            # print('tets')
-            print("FID: {} Food name: {} price: {}".format(
-                x[0], x[1], x[2]))
+            stemp = stemp + "FID: {} Food name: {} price: {}\n".format(
+                x[0], x[1], x[2])
+        return stemp
 
     def getFoods(self, fname):
         mycursor = self.__mydb.cursor()
         my_str = "select * from food where fname = '{}';".format(fname)
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
-        return myresult #returntype ->> list<tuple>
+        return myresult  # returntype ->> list<tuple>
 
     # pirvate function
-    def genBill(self,fid,uid,total):
+    def genBill(self, fid, uid, total):
         mycursor = self.__mydb.cursor()
         bid = self.bid
         date = datetime.datetime.now().strftime("%Y-%m-%d")
-        my_str = "INSERT INTO Bill VALUES('{}','{}','{}',{},'{}');".format(bid,uid,fid,total,date)
+        my_str = "INSERT INTO Bill VALUES('{}','{}','{}',{},'{}');".format(
+            bid, uid, fid, total, date)
         mycursor.execute(my_str)
         self.__mydb.commit()
     # def order(self,fid,uid,total):
     #     for i in a:
     #       print()
     #     print()
-    def showAllBill(self):
+
+    def getAllBill(self):
         mycursor = self.__mydb.cursor()
         my_str = "select * from Bill"
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
         stemp = ""
         for e in myresult:
-            stemp = e[0]
-            print(e)
-    def getbillUserDetail(self,username="",userId=""):
+            s = "bid: {}, uid: {}, fid: {}, total: {}, date: {}\n".format(
+                e[0], e[1], e[2], e[3], e[4].strftime("%d-%m-%Y"))
+            stemp = stemp+s
+        return stemp
+
+    def getbillUserDetail(self, username="", userId=""):
         mycursor = self.__mydb.cursor()
         get = ""
         result = ""
         if username == "":
             get = 'Bill.uid'
             result = userId
-        elif userId== "":
+        elif userId == "":
             get = 'User.uname'
             result = username
-        elif not(username=="") and not(userId==""):
+        elif not(username == "") and not(userId == ""):
             get = 'User.uname'
             result = username
         else:
             get = 'User.uname'
             result = "---"
+
         my_str = """
-        select Bill.bid,User.uname,Food.fname,Bill.Total,Bill.time
-        from Bill,User,Food
-        where Bill.uid = User.uid AND Bill.fid = Food.fid AND {} = '{}'
-        """.format(get,result)
+        select Bill.bid,User.uid,User.uname,Bill.time
+        from Bill,User
+        where Bill.uid = User.uid and {} = '{}'
+        GROUP BY bid,uid
+        """.format(get, result)
 
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
-        for e in myresult:
-            print(e)
 
+        str_result = ""
+        headers = ""
+        detail_temp = ""
+        for e in myresult:
+            headers = """+++++++++++++++++++++++++++++++++++++++++++++++++
+            \nBill_ID: {} User: {} Time: {}\n""".format(e[0], e[2], e[3].strftime("%d-%m-%Y"))
+
+            st = """
+        select Food.fname,Food.fprice,Bill.Total
+        from Bill,Food
+        where Bill.fid = Food.fid AND Bill.bid = '{}'
+        """.format(e[0])
+            mycursor.execute(st)
+            result = mycursor.fetchall()
+            sumprice = 0
+            for i in result:
+                detail_temp = detail_temp + \
+                    "\t{}  price: {} quantity: {}\n".format(i[0], i[1], i[2])
+                sumprice = sumprice + (i[1]*i[2])
+            s = "Total: " + \
+                str(sumprice) + \
+                " Baht\n\n+++++++++++++++++++++++++++++++++++++++++++++++++\n"
+            str_result = str_result + headers + detail_temp + s
+            detail_temp = ""
+        return str_result
+
+    def topsell(self):
+        mycursor = self.__mydb.cursor()
+        my_str = """select Bill.fid,Food.fname,SUM(total) sumTotal
+            from Bill,Food
+            where Bill.fid = Food.fid
+            group by Bill.fid,Food.fname
+            ORDER BY sumTotal DESC;;
+         """
+        mycursor.execute(my_str)
+        myresult = mycursor.fetchall()
+        stemp = ""
+        for e in myresult:
+            stemp = stemp+"FID: {},Food name: {}, Total: {}\n".format(e[0],e[1],e[2])
+        return stemp
 # if __name__ == '__main__':
 #     MySql().createUser('user1', 'user1', 'kku')
 # if __name__ == '__main__':

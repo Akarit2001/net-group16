@@ -22,23 +22,25 @@ def listenmsg():
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
     
     while  True:
-        print('\nyou got message: ',sock.recv(BUFFSIZE))
+        print('\nyou got message: ',sock.recv(BUFFSIZE).decode('utf8'))
 
 def server_handler(client):
     while True:
         try:
-            data = client.recv(BUFFSIZE)
+            data = client.recv(BUFFSIZE).decode('utf8')
         except:
-            print('ERROR! cannot connect to server.')
+            print('ERROR! connect failed.')
             break
         #exit funtion
-        if(not data) or (data.decode('utf-8') == 'q'):
-            print('OUT : ',client)
+        if(not data) or (data == 'q'):
+            print("----------- exit -----------")
+            # print('OUT : ',client)
             break
-
-        print(data.decode('utf-8'))
+        print("data from server",data)
+        # print(data.decode('utf-8'))
     # user exit
     client.close()
+    sys.exit()
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -56,11 +58,15 @@ task.start()
 # รอข้อรับความแบบกระจายทุกคนที่เชื่อมต่อจะได้รับเมื่อเชื่อมต่ออยู่
 task2 = td.Thread(target=listenmsg)
 task2.start()
-
+# input from user.
 while True:
     msg = input('Message: ')
+    if msg == '':
+        msg = " "
     client.send(msg.encode('utf-8'))
     time.sleep(0.5)
-    if msg == 'q' or msg == '':
+    
+    if msg == 'q':
         break
 client.close()
+sys.exit()

@@ -2,6 +2,7 @@ import  time
 from time import sleep
 import socket
 import threading as td
+import sys
 
 multicast_Address = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน server
 # ADMIN_PORT = 9999
@@ -35,19 +36,22 @@ def client_handler(client,addr):
         #exit funtion
         if(not data) or (data == 'q'):
             clientlist.remove(client)
-            print('OUT : ',client)
+            print('USER OUT : ',addr)
             break
         masage = str(addr) + ' >>> ' + data
         print('Masage from User : ',masage)
+        client.send(("we recive "+data).encode('utf-8'))
+        client.send(("we recive2 "+data).encode('utf-8'))
         ############################################################################
         ###         ส่งข้อความหาผู้ใช้หลายครั้งได้โดยไม่ต้องรอผู้ใช้ตอบกลับ                  ###
-        for i in range(5):
-            print(i)
-            client.send("Masage from server: testing{}".format(i).encode('utf-8'))
+        # for i in range(5):
+        #     print(i)
+        #     client.send("Masage from server: testing{}".format(i).encode('utf-8'))
         ############################################################################
 
     # user exit
     client.close()
+    sys.exit()
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -59,7 +63,7 @@ while True:
     print('Waiting for client...')
     client, addr = server.accept()
     clientlist.append(client)
-    print('All CLIENTS : ',clientlist)
+    print('connet form: ',addr)
     task = td.Thread(target=client_handler,args=(client,addr))
     task.start()
     ####################################
