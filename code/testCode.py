@@ -45,7 +45,6 @@ print(str1)
 print("--------------------showAllBill-----------------------")
 print(ms.MySql().getAllBill())
 
-
   #############################################
  ##          genbillเมื่อลูกค้าสั่ง oder          ##
 #############################################
@@ -56,5 +55,47 @@ print(ms.MySql().getAllBill())
 # user3.genBill('099793', '02582970396', 100)
 
 print("--------------------Top sell-----------------------")
-
 print(ms.MySql().topsell())
+ms.MySql().getbillUserDetail(userId="07055401949")
+print("-------------------------------------------")
+
+###################################################
+def startClient():
+  print('='*15 + '  Welcome to Foodservice  ' + '='*15+'\n')
+  
+def checkChoice(choice):
+  print("\t1. Login\n\t2. Register\n\t3. Bill history")
+  choice = int("Select : ")
+  if choice == '1':
+        print('Welcome You are going to login')
+        login()
+#         send(choice)
+    elif choice == '2':
+        print('Welcome You are going to register')
+        register()
+    elif choice == '3':
+        print('This is a Bill history')
+        print(ms.MySql().getAllBill())
+        ######
+    else:
+        print('\t\t' + '!'*5 + ' Invalid option please try again ' + '!'*5 + '\n')
+        
+def login():
+    username = input('Username : ')
+    password = input('Password : ')
+    ####
+    ####
+    print('You are logged!\n')
+    
+def register():
+    username = input('Username : ')
+    password = input('Password : ')
+    address = input('Address : ')
+    ####
+    if :
+      ms.Mysql.createUser(username,password, address)
+    else:
+       ######
+   
+    print('You are registered!\n')
+
