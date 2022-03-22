@@ -5,24 +5,19 @@ import struct
 import time
 # from pysql import mysqls as ms
 
-multicast_Address = '224.1.1.1' # ใช้สำหรับติดต่อไปยังผู้ใช้ทุกคนใน localhost
-
 server_ip = 'localhost'
 port = 5050
-port2 = 5000
-BUFFSIZE = 4096
+PORT2 = 5000
+BUFFSIZE = 10100
 
 def listenmsg():
-    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-    sock.bind(('',port2))
-    mreq = struct.pack("4sl",socket.inet_aton(multicast_Address),socket.INADDR_ANY)
-
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-    
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    s.bind(('',PORT2))
     while  True:
-        print('\nyou got message: ',sock.recv(BUFFSIZE).decode('utf8'))
+        message, address = s.recvfrom(BUFFSIZE)
+        print("\nYou got message:", message.decode('utf-8'))
 
 def server_handler(client):
     while True:
@@ -41,32 +36,36 @@ def server_handler(client):
     # user exit
     client.close()
     sys.exit()
+def client_connect_to_server():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    try:
+        client.connect((server_ip,port))
+    except:
+        print('ERROR! can not connect to server.')
+        sys.exit()
 
-try:
-    client.connect((server_ip,port))
-except:
-    print('ERROR! can not connect to server.')
+    # runthread
+    task = td.Thread(target=server_handler,args=(client,))
+    task.start()
+
+    # รอข้อรับความแบบกระจายทุกคนที่เชื่อมต่อจะได้รับเมื่อเชื่อมต่ออยู่
+    task2 = td.Thread(target=listenmsg)
+    task2.start()
+    # input from user.
+    while True:
+        msg = input('Message: ')
+        if msg == '':
+            msg = " "
+        client.send(msg.encode('utf-8'))
+        time.sleep(0.5)
+        
+        if msg == 'q':
+            break
+    client.close()
     sys.exit()
 
-# runthread
-task = td.Thread(target=server_handler,args=(client,))
-task.start()
-
-# รอข้อรับความแบบกระจายทุกคนที่เชื่อมต่อจะได้รับเมื่อเชื่อมต่ออยู่
-task2 = td.Thread(target=listenmsg)
-task2.start()
-# input from user.
-while True:
-    msg = input('Message: ')
-    if msg == '':
-        msg = " "
-    client.send(msg.encode('utf-8'))
-    time.sleep(0.5)
-    
-    if msg == 'q':
-        break
-client.close()
-sys.exit()
+############# รัน client_connect_to_server ที่นี่ ##################
+if __name__ == '__main__':
+    client_connect_to_server()
