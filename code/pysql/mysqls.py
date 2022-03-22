@@ -225,6 +225,19 @@ class MySql:
         for e in myresult:
             stemp = stemp+"FID: {},Food name: {}, Total: {}\n".format(e[0],e[1],e[2])
         return stemp
+    
+    def login(self,username,password):
+        if username == "" or password == "":
+            print("Username or Password could not empty!\n")
+        else:
+            mycursor = self._mydb.cursor()
+            mycursor.execute("select * from User where UName=%s and password=%s",(username,password))
+            row = mycursor.fetchone()
+            if row == None:
+                print("Error Invalid Username & Password\n")
+            else:
+                print("You are logged!\n")
+        
 # if __name__ == '__main__':
 #     MySql().createUser('user1', 'user1', 'kku')
 # if __name__ == '__main__':
