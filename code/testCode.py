@@ -72,9 +72,7 @@ def checkChoice(choice):
 def login():
     username = input('Username : ')
     password = input('Password : ')
-    ####
-    ####
-    print('You are logged!\n')
+    ms.Mysql.login(username,password)
 
 
 def register():
