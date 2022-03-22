@@ -24,7 +24,7 @@ def sende_to_all():
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 5)
     my_str = "\nthere have 3 clients connected to this server".encode('utf-8')
     sock.sendto(my_str, (multicast_Address,5000))
-    print('xxxxxxxxxxxxx sending. xxxxxxxxxxxxx')
+    print('='*15+' Sending '+'='*15)
     
 def client_handler(client,addr):
     while True:
