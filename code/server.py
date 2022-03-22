@@ -13,7 +13,10 @@ BUFFSIZE = 10100
 
 clientlist = [] # เก็บผู้ใช้ที่ connect เข้ามา
 
-print(type(clientlist))
+# print(type(clientlist))
+
+def say(s):
+    print(s+" is second input")
 
 def send_to_all():
     msg = 'Hello from addmin'.encode("utf-8")
@@ -98,9 +101,16 @@ def addmin_server():
         ##########Addmin เรียกใช้ sende_to_all#############
         if (data == "sta"):
             send_to_all()
-        ##############ตอบกลับ###########
-        admin.send(("we recive "+data).encode('utf-8'))
-        admin.send(("we recive2 "+data).encode('utf-8'))
+        mstr = ""
+        admin.send(("we recive "+data+" first").encode('utf-8'))
+
+        ########## การรับคำสั่งจากผู้ใช้หลายครั้ง #############
+        if (data == "say"):
+            admin.send((" input massage for say ").encode('utf-8'))
+            mstr = admin.recv(BUFFSIZE).decode('utf-8') # ------<<<<<<<<<รอรับ input จากผู้ใช้เป็นครั้งที่ 2>>>>>>>>
+            say(mstr)
+            admin.send(("we recive "+mstr+" second").encode('utf-8'))
+        
     admin.close()
     sys.exit()
 ######################################################
