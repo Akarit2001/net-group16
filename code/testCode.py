@@ -69,18 +69,14 @@ def checkChoice(choice):
         print('\t\t' + '!'*5 + ' Invalid option please try again ' + '!'*5 + '\n')
 
 
-def login():
+def loginCmd():
     username = input('Username : ')
     password = input('Password : ')
     ms.Mysql.login(username,password)
 
 
-def register():
+def registerCmd():
     username = input('Username : ')
     password = input('Password : ')
     address = input('Address : ')
-    ####
     ms.Mysql.createUser(username, password, address)
-    ######
-
-    print('You are registered!\n')
