@@ -56,11 +56,11 @@ def checkChoice(choice):
     choice = int("Select : ")
     if choice == '1':
         print('Welcome You are going to login')
-        login()
+        loginCmd()
 #         send(choice)
     elif choice == '2':
         print('Welcome You are going to register')
-        register()
+        registerCmd()
     elif choice == '3':
         print('This is a Bill history')
         print(ms.MySql().getAllBill())
