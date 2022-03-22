@@ -25,7 +25,6 @@ def sende_to_all():
     my_str = "\nthere have 3 clients connected to this server".encode('utf-8')
     sock.sendto(my_str, (multicast_Address,5000))
     print('='*15+' Sending '+'='*15)
-    
 def client_handler(client,addr):
     while True:
         try:
