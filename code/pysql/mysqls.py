@@ -236,7 +236,7 @@ class MySql:
             if row == None:
                 print("Error Invalid Username & Password\n")
             else:
-                print("You are logged!\n")
+                print("Welcome You are logged!\n")
         
 # if __name__ == '__main__':
 #     MySql().createUser('user1', 'user1', 'kku')
