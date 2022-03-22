@@ -65,7 +65,7 @@ def client_connect_to_server():
             break
     client.close()
     sys.exit()
-
-############# รัน client_connect_to_server ที่นี่ ##################
+#############################################################
+############# รัน client_connect_to_server ที่นี่ ###############
 if __name__ == '__main__':
     client_connect_to_server()

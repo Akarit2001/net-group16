@@ -15,7 +15,7 @@ clientlist = [] # เก็บผู้ใช้ที่ connect เข้า�
 
 print(type(clientlist))
 
-def sende_to_all():
+def send_to_all():
     msg = 'Hello from addmin'.encode("utf-8")
     dest = (broadcast,PORT2)
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -38,6 +38,7 @@ def client_handler(client,addr):# รองรับผู้ใช้หลา�
             break
         masage = str(addr) + ' >>> ' + data
         print('Masage from User : ',masage)
+        ##############ตอบกลับ###########
         client.send(("we recive "+data).encode('utf-8'))
         client.send(("we recive2 "+data).encode('utf-8'))
         ############################################################################
@@ -83,18 +84,6 @@ def addmin_server():
     ##########################
     print('Addmin is connect form: ',addr)
     while True:
-
-       ####################################
-        # เมื่อมีผู้ใช้เชื่อมต่อเข้ามาครบ 3 เครื่องและ Admin connect เข้ามาจะส่ง message ไปยังทุกเครื่อง ทดสอบให้ดูเฉยๆ
-        n = 0
-        # สร้างเงื่อนไขในการ run function sende_to_all
-        for i in clientlist:
-            n = n+1
-            if n==3:
-                sende_to_all()
-                # task1 = td.Thread(target=sende_to_all)
-                # task1.start()
-        ######################################
         try:
             data = admin.recv(BUFFSIZE).decode('utf-8')
         except:
@@ -103,13 +92,18 @@ def addmin_server():
         if(not data) or (data == 'q'):
             print('USER OUT : ',addr)
             break
+
         masage =  'Admin >>> ' + data
         print('Masage from User : ',masage)
+        ##########Addmin เรียกใช้ sende_to_all#############
+        if (data == "sta"):
+            send_to_all()
+        ##############ตอบกลับ###########
         admin.send(("we recive "+data).encode('utf-8'))
         admin.send(("we recive2 "+data).encode('utf-8'))
     admin.close()
     sys.exit()
-    #############
+######################################################
 ############# รัน server รัน Code ที่นี่ ##################
 if __name__ == '__main__':
     task1 = td.Thread(target=client_server)
