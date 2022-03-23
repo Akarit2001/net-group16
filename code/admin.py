@@ -39,7 +39,7 @@ def admin_connect_to_server():
 
     # input from user.
     while True:
-        msg = input('Addmin Message: ')
+        msg = input('Admin Message: ')
         if msg == '':
             msg = " "
         client.send(msg.encode('utf-8'))
