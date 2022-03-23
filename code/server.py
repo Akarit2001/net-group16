@@ -128,6 +128,9 @@ def addmin_server():
         try:
             data = admin.recv(BUFFSIZE).decode('utf-8')
             if data == '1':
+                ################################################
+                ##  Username : admin , Password : admin ########
+                ################################################
                 admin.send(('Welcome to Login').encode('utf-8'))
                 admin.send(('Enter your Username').encode('utf-8'))
                 username = admin.recv(BUFFSIZE).decode('utf-8')
