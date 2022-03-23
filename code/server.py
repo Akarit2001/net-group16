@@ -31,6 +31,9 @@ def client_handler(client,addr):# รองรับผู้ใช้หลา�
     while True:
         try:
             data = client.recv(BUFFSIZE).decode('utf-8')
+            ##########################
+            # เรียกใช้ฟังชั่น login ตรงนี้  #
+            ##########################
         except:
             clientlist.remove(client)
             break
@@ -67,9 +70,7 @@ def client_server():
         client, addr = server.accept()
         clientlist.append(client)
         print('connet form: ',addr)
-        ##########################
-        # เรียกใช้ฟังชั่น login ตรงนี้  #
-        ##########################
+
         task = td.Thread(target=client_handler,args=(client,addr))
         task.start()
  
