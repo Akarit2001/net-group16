@@ -27,11 +27,15 @@ def server_handler(client):
             print('ERROR! connect failed.')
             break
         #exit funtion
-        if(not data) or (data == 'q'):
+        if data == 'q':
             print("----------- exit -----------")
             # print('OUT : ',client)
             break
-        print("data from server",data)
+        elif not data:
+            print("----------- exit -----------")
+            print("You must be logged")
+            break
+        print("Data from server : ",data)
         # print(data.decode('utf-8'))
     # user exit
     client.close()
@@ -54,6 +58,8 @@ def client_connect_to_server():
     task2 = td.Thread(target=listenmsg)
     task2.start()
     # input from user.
+    print('='*15 + '  Welcome to Foodservice  ' + '='*15+'\n')
+    print("\t1. Login\n\t2. Register\n\t3. Bill history\n\t4. Order Food\n")
     while True:
         msg = input('Message: ')
         if msg == '':

@@ -16,10 +16,15 @@ def server_handler(client):
             print('ERROR! connect failed.')
             break
         #exit funtion
-        if(not data) or (data == 'q'):
+        if data == 'q':
             print("----------- exit -----------")
+            # print('OUT : ',client)
             break
-        print("data from server",data)
+        elif not data:
+            print("----------- exit -----------")
+            print("You must be logged")
+            break
+        print("Data from server : ",data)
         
     # user exit
     client.close()
@@ -38,6 +43,8 @@ def admin_connect_to_server():
     task.start()
 
     # input from user.
+    print('='*15 + '  Welcome to Foodservice manager |Admin|  ' + '='*15+'\n')
+    print("\t1. Login\n\t2. Get All User\n\t3. Delete User\n\t4. Get All Bill\n\t5. Add Food\n\t6. Delete Food\n\t7. Get All Food\n\t8. Top Sell\n")
     while True:
         msg = input('Admin Message: ')
         if msg == '':

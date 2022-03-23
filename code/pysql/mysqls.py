@@ -30,6 +30,7 @@ class MySql:
             mycursor.execute(my_str)
             self.__mydb.commit()
             print("UserID: {} name: {} created.".format(self.uid, username))
+            return True
         elif(b):
             print("User name: {} has been used.".format(username))
 
@@ -89,6 +90,7 @@ class MySql:
         mycursor.execute(my_str)
         print('User: {} droped.'.format(username))
         self.__mydb.commit()
+        return True
 
     # Food
     def addFoods(self, name, price):
@@ -103,6 +105,7 @@ class MySql:
             mycursor.execute(my_str)
             self.__mydb.commit()
             print("ID: {} Food: {} Price: {} was added.".format(fid, name, price))
+            return True
         elif(b):
             print("There is a food with this name '{}'".format(name))
 
@@ -113,6 +116,7 @@ class MySql:
         mycursor.execute(my_str)
         print('Food: {} droped.'.format(fname))
         self.__mydb.commit()
+        return True
 
     def getAllFood(self):
         mycursor = self.__mydb.cursor()
@@ -130,7 +134,7 @@ class MySql:
         my_str = "select * from food where fname = '{}';".format(fname)
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
-        return myresult  # returntype ->> list<tuple>
+        return myresult,True  # returntype ->> list<tuple>
 
     # pirvate function
     def genBill(self, fid, uid, total):
@@ -235,9 +239,25 @@ class MySql:
             row = mycursor.fetchone()
             if row == None:
                 print("Error Invalid Username & Password\n")
+                return False
             else:
                 print("Welcome You are logged!!\n")
                 return True
+    
+    def loginAd(self,username,password):
+        if username == "" or password == "":
+            print("Username or Password could not empty!\n")
+        else:
+            mycursor = self.__mydb.cursor()
+            if username == "admin" and password == "admin":
+                mycursor.execute("select * from User where UName=%s and password=%s",(username,password))
+                row = mycursor.fetchone()
+                if row == None:
+                    print("Error Invalid Username & Password\n")
+                    return False
+                else:
+                    print("Welcome You are logged!!\n")
+                    return True
         
 # if __name__ == '__main__':
 #     MySql().createUser('user1', 'user1', 'kku')
