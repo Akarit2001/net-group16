@@ -35,6 +35,7 @@ print(ms.MySql().getAllBill())
 #############################################
 # user2 = ms.MySql()
 # user2.genBill('020855', '07055401949', 10)
+
 # user2.genBill('037946', '07055401949', 15)
 # user3 = ms.MySql()
 # user3.genBill('099793', '02582970396', 100)

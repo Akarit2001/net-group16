@@ -1,7 +1,7 @@
 import mysql.connector
 import random
 import datetime
-
+from pysql import mysqls
 
 # เตือนการใช้ object เดียวในการ aad ค่าในตารางจะทำให้ id มันซ้ำกัน แต่จะใช้ในการ genbill ได้
 class MySql:
