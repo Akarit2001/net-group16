@@ -230,13 +230,14 @@ class MySql:
         if username == "" or password == "":
             print("Username or Password could not empty!\n")
         else:
-            mycursor = self._mydb.cursor()
+            mycursor = self.__mydb.cursor()
             mycursor.execute("select * from User where UName=%s and password=%s",(username,password))
             row = mycursor.fetchone()
             if row == None:
                 print("Error Invalid Username & Password\n")
             else:
                 print("Welcome You are logged!!\n")
+                return True
         
 # if __name__ == '__main__':
 #     MySql().createUser('user1', 'user1', 'kku')
