@@ -213,7 +213,7 @@ class MySql:
                 " Baht\n\n+++++++++++++++++++++++++++++++++++++++++++++++++\n"
             str_result = str_result + headers + detail_temp + s
             detail_temp = ""
-        return str_result
+        return str_result,True
 
     def topsell(self):
         mycursor = self.__mydb.cursor()
