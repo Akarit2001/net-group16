@@ -60,6 +60,7 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
                     client.send(
                         ("Error Invalid Username & Password\n").encode('utf-8'))
             elif data == '2' and login == False:
+                
                 client.send(('Welcome to Register').encode('utf-8'))
                 client.send(('Enter your Username').encode('utf-8'))
                 username = client.recv(BUFFSIZE).decode('utf-8')
