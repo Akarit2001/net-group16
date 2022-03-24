@@ -67,7 +67,7 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
             elif data == '3':
                 if login == True:
                     client.send(('Welcome to Bill History').encode('utf-8'))
-                    client.send((getBilUser()).endcode('utf-8')
+                    client.send((getBilUser()).endcode('utf-8'))
                 else:
                     client.send(('You must be logged').encode('utf-8'))
             elif data == '4':
