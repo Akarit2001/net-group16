@@ -46,10 +46,9 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
                 password = client.recv(BUFFSIZE).decode('utf-8')
                 login = loginClient(username, password)
                 if login == True:
-                     client.send(("Welcome You are logged!!").encode('utf-8'))
+                    client.send(("Welcome You are logged!!").encode('utf-8'))
                 else:
-                    client.send(
-                        ("Error Invalid Username & Password\n").encode('utf-8'))
+                    client.send(("Error Invalid Username & Password\n\t\t    Please try againt").encode('utf-8'))
             elif data == '2':
                 client.send(('Welcome to Register').encode('utf-8'))
                 client.send(('Enter your Username').encode('utf-8'))
