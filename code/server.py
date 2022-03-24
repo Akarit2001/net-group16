@@ -37,6 +37,7 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
     login = False
     username = ''
     userid = ''
+    useradd = ''
     while True:
         try:
             data = client.recv(BUFFSIZE).decode('utf-8')
@@ -54,13 +55,14 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
                 if login == True:
                     username = username
                     userid = ms.MySql().getUser(username=username)[0][0]
+                    useradd = ms.MySql().getUser(username=username)[0][3]
                     client.send(("Welcome You are logged!!").encode('utf-8'))
                 else:
                     login = False
                     client.send(
                         ("Error Invalid Username & Password\n").encode('utf-8'))
             elif data == '2' and login == False:
-                
+
                 client.send(('Welcome to Register').encode('utf-8'))
                 client.send(('Enter your Username').encode('utf-8'))
                 username = client.recv(BUFFSIZE).decode('utf-8')
@@ -75,6 +77,7 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
                     client.send(('You are registered!').encode('utf-8'))
                     userid = ms.MySql().getUser(username=username)[0][0]
                     username = username
+                    useradd = address
                 else:
                     regis = False
                     client.send((st).encode('utf-8'))
@@ -103,8 +106,7 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
                             for i in oderlist:                               
                                 userOder.genBill(i[0], userid, str(i[1]))
                                 sumb = sumb+(i[1]*ms.MySql().getFoodbyID(str(i[0]))[2]) 
-                            s = "Total price: {} bath.".format(sumb)
-                            print(s)            
+                            s = "Total price: {} bath, Send to: {}".format(sumb,useradd)           
                             client.send(s.encode('utf-8'))
                             break
                         elif userinput == 'c':
