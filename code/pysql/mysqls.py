@@ -30,9 +30,10 @@ class MySql:
             mycursor.execute(my_str)
             self.__mydb.commit()
             print("UserID: {} name: {} created.".format(self.uid, username))
-            return True
+            return (True,self.uid)
         elif(b):
             print("User name: {} has been used.".format(username))
+            return False
 
     def getAllUser(self):
         mycursor = self.__mydb.cursor()
@@ -135,7 +136,12 @@ class MySql:
         mycursor.execute(my_str)
         myresult = mycursor.fetchall()
         return myresult,True  # returntype ->> list<tuple>
-
+    def getFoodbyID(self, fid):
+        mycursor = self.__mydb.cursor()
+        my_str = "select * from food where fid = '{}';".format(fid)
+        mycursor.execute(my_str)
+        myresult = mycursor.fetchall()
+        return myresult[0]
     # pirvate function
     def genBill(self, fid, uid, total):
         mycursor = self.__mydb.cursor()
@@ -213,7 +219,7 @@ class MySql:
                 " Baht\n\n+++++++++++++++++++++++++++++++++++++++++++++++++\n"
             str_result = str_result + headers + detail_temp + s
             detail_temp = ""
-        return str_result,True
+        return str_result
 
     def topsell(self):
         mycursor = self.__mydb.cursor()

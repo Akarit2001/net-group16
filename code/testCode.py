@@ -65,7 +65,7 @@ def checkChoice(choice):
     elif choice == '3':
         print('This is a Bill history')
         print(ms.MySql().getAllBill())
-        ######
+ 
     else:
         print('\t\t' + '!'*5 + ' Invalid option please try again ' + '!'*5 + '\n')
 
@@ -81,3 +81,8 @@ def registerCmd():
     password = input('Password : ')
     address = input('Address : ')
     ms.Mysql.createUser(username, password, address)
+
+
+print(sql.getbillUserDetail('user3'),"sdfsdf")
+strs = ms.MySql().getbillUserDetail("user3")
+print(strs)

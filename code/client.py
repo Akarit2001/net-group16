@@ -23,6 +23,8 @@ def server_handler(client):
     while True:
         try:
             data = client.recv(BUFFSIZE).decode('utf8')
+            print("server say:",data)
+
         except:
             print('ERROR! connect failed.')
             break
@@ -33,9 +35,9 @@ def server_handler(client):
             break
         elif not data:
             print("----------- exit -----------")
-            print("You must be logged")
+            # print(str(data))
+            print("error")
             break
-        print("Data from server : ",data)
         # print(data.decode('utf-8'))
     # user exit
     client.close()

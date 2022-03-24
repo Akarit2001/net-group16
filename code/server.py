@@ -35,22 +35,31 @@ def send_to_all():
 
 def client_handler(client, addr):  # รองรับผู้ใช้หลายคน
     login = False
+    username = ''
+    userid = ''
     while True:
         try:
             data = client.recv(BUFFSIZE).decode('utf-8')
-            if data == '1':
+            masage = str(addr) + ' >>> ' + data
+            print('Masage from User : ', masage)
+            # client.send((data).encode('utf-8'))
+            if data == '1' and login == False:
                 client.send(('Welcome to Login').encode('utf-8'))
+                time.sleep(.1)
                 client.send(('Enter your Username').encode('utf-8'))
                 username = client.recv(BUFFSIZE).decode('utf-8')
                 client.send(('Enter your Password').encode('utf-8'))
                 password = client.recv(BUFFSIZE).decode('utf-8')
                 login = loginClient(username, password)
                 if login == True:
-                     client.send(("Welcome You are logged!!").encode('utf-8'))
+                    username = username
+                    userid = ms.MySql().getUser(username=username)[0][0]
+                    client.send(("Welcome You are logged!!").encode('utf-8'))
                 else:
+                    login = False
                     client.send(
                         ("Error Invalid Username & Password\n").encode('utf-8'))
-            elif data == '2':
+            elif data == '2' and login == False:
                 client.send(('Welcome to Register').encode('utf-8'))
                 client.send(('Enter your Username').encode('utf-8'))
                 username = client.recv(BUFFSIZE).decode('utf-8')
@@ -59,29 +68,53 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
                 client.send(('Enter your Address').encode('utf-8'))
                 address = client.recv(BUFFSIZE).decode('utf-8')
                 regis = registerClient(username, password, address)
-                if regis == True:
+                st = regis[0]
+                if regis[1] == True:
+                    client.send((st).encode('utf-8'))
                     client.send(('You are registered!').encode('utf-8'))
+                    userid = ms.MySql().getUser(username=username)[0][0]
+                    username = username
                 else:
+                    regis = False
+                    client.send((st).encode('utf-8'))
                     client.send(('Please try again').encode('utf-8'))
                 # client.send((uid,username).encode('utf-8'))
             elif data == '3':
-                 if login == True:
+                if login == True:
                     client.send(('Welcome to Bill History').encode('utf-8'))
-                    client.send(('Enter your Username').endcode('utf-8'))
-                    username = client.recv(BUFFSIZE).decode('utf-8')
-                    client.send(('Enter your UserID').endcode('utf-8'))
-                    userId= client.recv(BUFFSIZE).decode('utf-8')
-                    getbilldetail = getBilUser(username,userId)
-                    if getbilldetail == True:
-                        client.send((getbilldetail).encode('utf-8'))
-                    else:
-                        client.send(('You must be logged').encode('utf-8'))
+                    getbilldetail = getBilUser(username)
+                    client.send((getbilldetail).encode('utf-8'))
+                else:
+                    client.send(('You must be logged').encode('utf-8'))
             elif data == '4':
+                oderlist = []
+                userOder = ms.MySql()
+                sumb = 0
                 if login == True:
                     client.send(('Welcome to Order Food').encode('utf-8'))
-                    #####################################################
-                    ##### Function Order Food ##########################
-                    ####################################################
+                    client.send(("\n\n"+ms.MySql().getAllFood()).encode('utf-8'))
+                    client.send(("\n cf: for exit and confirm order. \n c: for cancle order").encode('utf-8'))
+                    while 1:
+                        client.send(("\n\n==Enter fid==").encode('utf-8'))
+                        userinput = client.recv(BUFFSIZE).decode('utf-8')
+
+                        if userinput == 'cf':
+                            for i in oderlist:                               
+                                userOder.genBill(i[0], userid, str(i[1]))
+                                sumb = sumb+(i[1]*ms.MySql().getFoodbyID(str(i[0]))[2]) 
+                            s = "Total price: {} bath.".format(sumb)
+                            print(s)            
+                            client.send(s.encode('utf-8'))
+                            break
+                        elif userinput == 'c':
+                            oderlist = []
+                            client.send(("Oder cancle").encode('utf-8'))
+                            break
+                        client.send(("==quantity==").encode('utf-8'))
+                        total = int(client.recv(BUFFSIZE).decode('utf-8'))
+                        oderlist.append((userinput,int(total)))
+                    
+
                 else:
                     client.send(('You must be logged').encode('utf-8'))
             ##########################
@@ -95,17 +128,6 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
             clientlist.remove(client)
             print('USER OUT : ', addr)
             break
-        masage = str(addr) + ' >>> ' + data
-        print('Masage from User : ', masage)
-        ##############ตอบกลับ###########
-        # client.send(("we recive "+data).encode('utf-8'))
-        # client.send(("we recive2 "+data).encode('utf-8'))
-        ############################################################################
-        ###         ส่งข้อความหาผู้ใช้หลายครั้งได้โดยไม่ต้องรอผู้ใช้ตอบกลับ                  ###
-        # for i in range(5):
-        #     print(i)
-        #     client.send("Masage from server: testing{}".format(i).encode('utf-8'))
-        ############################################################################
 
     # user exit
     client.close()
@@ -124,7 +146,6 @@ def client_server():
         client, addr = server.accept()
         clientlist.append(client)
         print('connet form: ', addr)
-
         task = td.Thread(target=client_handler, args=(client, addr))
         task.start()
 
@@ -134,7 +155,7 @@ def addmin_server():
     server2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     server2.bind((my_ip, ADMIN_PORT))
-    server2.listen(1)
+    server2.listen(3)
 
     print('Waiting for Admin... PORT for Admin: ', ADMIN_PORT)
     admin, addr = server2.accept()
@@ -157,7 +178,7 @@ def addmin_server():
                 password = admin.recv(BUFFSIZE).decode('utf-8')
                 login = loginAdmin(username, password)
                 if login == True:
-                     admin.send(("Welcome You are logged!!").encode('utf-8'))
+                    admin.send(("Welcome You are logged!!").encode('utf-8'))
                 else:
                     admin.send(
                         ("Error Invalid Username & Password\n").encode('utf-8'))
@@ -202,7 +223,8 @@ def addmin_server():
                     if addfood == True:
                         admin.send(('Succeed Food was added ').encode('utf-8'))
                     else:
-                        admin.send(('There is already a food with this name').encode('utf-8'))
+                        admin.send(
+                            ('There is already a food with this name').encode('utf-8'))
                 else:
                     admin.send(('You must be logged').encode('utf-8'))
 
@@ -215,7 +237,8 @@ def addmin_server():
                     fname = admin.recv(BUFFSIZE).decode('utf-8')
                     deletefood = sql.deleteFoods(fid, fname)
                     if deletefood == True:
-                        admin.send(('Succeed Food was deleted ').encode('utf-8'))
+                        admin.send(
+                            ('Succeed Food was deleted ').encode('utf-8'))
                     else:
                         admin.send(('Please try againt').encode('utf-8'))
                 else:
@@ -261,15 +284,17 @@ def addmin_server():
             mstr = admin.recv(BUFFSIZE).decode('utf-8')
             say(mstr)
             admin.send(("we recive "+mstr+" second").encode('utf-8'))
-            
+
     admin.close()
     sys.exit()
 
-def DeleteUser(UIDs,username):
+
+def DeleteUser(UIDs, username):
     print("Admin Drop User")
-    dluser = sql.dropUser(UIDs,username)
+    dluser = sql.dropUser(UIDs, username)
     if dluser == True:
         return True
+
 
 def Getfood(foodname):
     print("Admin get food")
@@ -277,47 +302,57 @@ def Getfood(foodname):
     if getf == True:
         return True
 
-def loginClient(username,password):
+
+def loginClient(username, password):
     print("User Login")
-    log = sql.login(username,password)
+    log = sql.login(username, password)
     if log == True:
         return True
-    
-def loginAdmin(username,password):
+
+
+def loginAdmin(username, password):
     print("Admin Login")
-    log = sql.loginAd(username,password)
+    log = sql.loginAd(username, password)
     if log == True:
         return True
 
-def registerClient(username,password,address):
-    print("User Register")
+
+def registerClient(username, password, address):
+    # print("User Register")
     res = sql.createUser(username, password, address)
-    if res == True:
-        return True
+    if res[0] == True:
+        return (str("UserID: {} name: {} created.".format(res[1],username)),True)
+    if res == False:
+        return (str("User name: {} has been used.".format(username)),False)
 
-def getBilUser(username,userId):
-    print("User Bill History")
-    getbillU = sql.getbillUserDetail(username,userId)
-    if getbillU == True:
-        return True
 
-def addFood(foodname,price):
+def getBilUser(username):
+    getbillU = ms.MySql().getbillUserDetail(username)
+    if(getbillU == ""):
+        getbillU = "No data"
+    return '\n'+getbillU
+
+
+def addFood(foodname, price):
     print("Admin Add Food")
-    adfood = sql.addFoods(foodname,price)
+    adfood = sql.addFoods(foodname, price)
     if adfood == True:
         return True
 
-def Deletefood(FID,foodname):
+
+def Deletefood(FID, foodname):
     print("Admin Delete Food")
-    dlfood = sql.deleteFoods(FID,foodname)
+    dlfood = sql.deleteFoods(FID, foodname)
     if dlfood == True:
         return True
+
+
 ######################################################
 ############# รัน server รัน Code ที่นี่ ##################
 #####################################################
 if __name__ == '__main__':
     task1 = td.Thread(target=client_server)
     task1.start()
-    time.sleep(0.25) # รอให้เซิร์ฟเวอร์แรกรันเสร็จก่อน
+    time.sleep(0.25)  # รอให้เซิร์ฟเวอร์แรกรันเสร็จก่อน
     task2 = td.Thread(target=addmin_server)
     task2.start()
