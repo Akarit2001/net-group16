@@ -134,6 +134,7 @@ def addmin_server():
     admin, addr = server2.accept()
 
     print('Admin is connect form: ', addr)
+    login = False
     while True:
         try:
             data = admin.recv(BUFFSIZE).decode('utf-8')
