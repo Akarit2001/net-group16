@@ -65,11 +65,17 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
                     client.send(('Please try again').encode('utf-8'))
                 # client.send((uid,username).encode('utf-8'))
             elif data == '3':
-                if login == True:
+                 if login == True:
                     client.send(('Welcome to Bill History').encode('utf-8'))
-                    client.send((getBilUser()).endcode('utf-8'))
-                else:
-                    client.send(('You must be logged').encode('utf-8'))
+                    client.send(('Enter your Username').endcode('utf-8'))
+                    username = client.recv(BUFFSIZE).decode('utf-8')
+                    client.send(('Enter your UserID').endcode('utf-8'))
+                    userId= client.recv(BUFFSIZE).decode('utf-8')
+                    getbilldetail = getBilUser(username,userId)
+                    if getbilldetail == True:
+                        client.send((getbilldetail).encode('utf-8'))
+                    else:
+                        client.send(('You must be logged').encode('utf-8'))
             elif data == '4':
                 if login == True:
                     client.send(('Welcome to Order Food').encode('utf-8'))
@@ -289,9 +295,11 @@ def registerClient(username,password,address):
     if res == True:
         return True
 
-def getBilUser():
-    print("Bill History")
-    sql.getbillUserDetail("","")
+def getBilUser(username,userId):
+    print("User Bill History")
+    getbillU = sql.getbillUserDetail(username,userId)
+    if getbillU == True:
+        return True
 
 def addFood(foodname,price):
     print("Admin Add Food")
