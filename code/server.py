@@ -34,7 +34,7 @@ def send_to_all():
 
 
 def client_handler(client, addr):  # รองรับผู้ใช้หลายคน
-    # login = False
+    login = False
     while True:
         try:
             data = client.recv(BUFFSIZE).decode('utf-8')
