@@ -67,12 +67,15 @@ def client_handler(client, addr):  # รองรับผู้ใช้หล�
             elif data == '3':
                 if login == True:
                     client.send(('Welcome to Bill History').encode('utf-8'))
-                    getBilUser()
+                    client.send((getBilUser()).endcode('utf-8')
                 else:
                     client.send(('You must be logged').encode('utf-8'))
             elif data == '4':
                 if login == True:
                     client.send(('Welcome to Order Food').encode('utf-8'))
+                    #####################################################
+                    ##### Function Order Food ##########################
+                    ####################################################
                 else:
                     client.send(('You must be logged').encode('utf-8'))
             ##########################
@@ -190,8 +193,7 @@ def addmin_server():
                     if addfood == True:
                         admin.send(('Succeed Food was added ').encode('utf-8'))
                     else:
-                        admin.send(
-                            ('There is already a food with this name').encode('utf-8'))
+                        admin.send(('There is already a food with this name').encode('utf-8'))
                 else:
                     admin.send(('You must be logged').encode('utf-8'))
 
@@ -204,8 +206,7 @@ def addmin_server():
                     fname = admin.recv(BUFFSIZE).decode('utf-8')
                     deletefood = sql.deleteFoods(fid, fname)
                     if deletefood == True:
-                        admin.send(
-                            ('Succeed Food was deleted ').encode('utf-8'))
+                        admin.send(('Succeed Food was deleted ').encode('utf-8'))
                     else:
                         admin.send(('Please try againt').encode('utf-8'))
                 else:
