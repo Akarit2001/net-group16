@@ -144,6 +144,8 @@ def addmin_server():
     while True:
         try:
             data = admin.recv(BUFFSIZE).decode('utf-8')
+            masage = 'Admin >>> ' + data
+            print('Masage from User : ', masage)
             if data == '1':
                 ################################################
                 ##  Username : admin , Password : admin ########
@@ -246,8 +248,6 @@ def addmin_server():
             print("You must be logged")
             break
 
-        masage = 'Admin >>> ' + data
-        print('Masage from User : ', masage)
         ##########Addmin เรียกใช้ sende_to_all#############
         if (data == "sta"):
             send_to_all()
@@ -261,7 +261,7 @@ def addmin_server():
             mstr = admin.recv(BUFFSIZE).decode('utf-8')
             say(mstr)
             admin.send(("we recive "+mstr+" second").encode('utf-8'))
-
+            
     admin.close()
     sys.exit()
 
